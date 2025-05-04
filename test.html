@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>WebSocket Test</title>
+</head>
+<body>
+  <h1>Server Status</h1>
+  <ul id="statusList"></ul>
+
+  <script>
+    const socket = new WebSocket("ws://localhost:8080/ws");
+
+    socket.onmessage = function(event) {
+      const data = JSON.parse(event.data);
+      const ul = document.getElementById("statusList");
+      ul.innerHTML = "";
+      data.forEach(server => {
+        const li = document.createElement("li");
+        li.textContent = `${server.name} (${server.address}:${server.port}) → ${server.status}`;
+        li.style.color = server.status === "online" ? "green" : "red";
+        ul.appendChild(li);
+      });
+    };
+
+    socket.onerror = function(error) {
+      console.error("WebSocket error:", error);
+    };
+  </script>
+</body>
+</html>
